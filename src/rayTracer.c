@@ -498,20 +498,25 @@ rgb *getObjectColor(long double *eye, long double *directionV, struct intData* i
 	
 	//intento de refraccion
 	if(inter->obj->o3 > 0 && tDepth < 5){
-		//printf("%d\n",tDepth);
+		
+		//Índice de refracción
 		long double nr = inter->obj->kr;
 		
-		long double *refractedVect = (long double*)calloc(3, sizeof(long double));	
-		long double cosNV = (long double)n[0]*V[0]+n[1]*V[1]+n[2]*V[2];
+		//n = normal, V = vector de dirección reverso
+		long double *refractedVect = (long double*)calloc(3, sizeof(long double));
 		
+		long double cosNV = (long double)n[0]*V[0]+n[1]*V[1]+n[2]*V[2];
 		long double cos_ot = (nr * cosNV) - sqrt(1-(nr*nr*(1 - (cosNV * cosNV))));
 		
+		//Rayo refractado
 		refractedVect[0] = (cos_ot*n[0]) - (nr*V[0]);
 		refractedVect[1] = (cos_ot*n[1]) - (nr*V[1]);
 		refractedVect[2] = (cos_ot*n[2]) - (nr*V[2]);
 		
+		//Se envía el nuevo rayo
 		transparencyColor = getColor(inter->vector, refractedVect, rDepth, tDepth+1);
 		
+		//Se altera el color
 		if(transparencyColor == NULL){
 			 transparencyColor = (rgb*) calloc(1, sizeof(rgb));
 			 transparencyColor->r = bgColor.r;
